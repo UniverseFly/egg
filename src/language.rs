@@ -432,6 +432,35 @@ impl<L: Language> RecExpr<L> {
     }
 }
 
+struct RecExprIter<'a, L> {
+    index: usize,
+    nodes: &'a [L],
+}
+
+impl<'a, L> Iterator for RecExprIter<'a, L> {
+    type Item = (Id, &'a L);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index >= self.nodes.len() {
+            None
+        } else {
+            let result = Some((Id::from(self.index), &self.nodes[self.index]));
+            self.index += 1;
+            result
+        }
+    }
+}
+
+impl<L: Language> RecExpr<L> {
+    /// Returns an iterator whose items are (Id, ENode) pairs.
+    pub fn iter(&self) -> impl Iterator<Item = (Id, &L)> {
+        RecExprIter {
+            index: 0,
+            nodes: &self.nodes,
+        }
+    }
+}
+
 impl<L: Language> Index<Id> for RecExpr<L> {
     type Output = L;
     fn index(&self, id: Id) -> &L {
