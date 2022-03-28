@@ -20,6 +20,12 @@ pub enum VarParseError {
     MissingQuestionMark(String),
 }
 
+impl From<Symbol> for Var {
+    fn from(s: Symbol) -> Self {
+        Self(s)
+    }
+}
+
 impl FromStr for Var {
     type Err = VarParseError;
 
